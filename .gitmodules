@@ -1,0 +1,3 @@
+[submodule "mi-qsar"]
+	path = mi-qsar
+	url = git@github.com:cimm-kzn/3D-MIL-QSAR.git
