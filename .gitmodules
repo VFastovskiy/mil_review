@@ -1,3 +1,6 @@
 [submodule "mi-qsar"]
 	path = mi-qsar
 	url = git@github.com:cimm-kzn/3D-MIL-QSAR.git
+[submodule "rdkit-scripts"]
+	path = rdkit-scripts
+	url = https://github.com/DrrDom/rdkit-scripts.git
