@@ -57,6 +57,15 @@ class MolecularFingerprints:
             return fingerprints
 
         elif dimension == "3D":
+            for mol in self.molecules:
+                if mol is not None:
+                    full_id = mol.GetProp('full_id')
+                    try:
+                        conf_id = int(full_id.split('_')[-1])
+                        for conf in mol.GetConformers():
+                            conf.SetId(conf_id)
+                    except ValueError:
+                        print(f"Warning: Could not convert conf_id from full_id '{full_id}' for molecule.")
             print(f"Fingerprint {fingerprint_name} is 3D. Using Mol objects directly...")
             # For 3D fingerprints, directly use the Mol objects from SDF
             fingerprints = fingerprint_class(n_jobs=-1).fit_transform(self.molecules)

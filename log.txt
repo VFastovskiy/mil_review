@@ -1,9 +1,1 @@
 Fingerprint calculation log:
-Failed to calculate E3FPFingerprint: Passed data must be molecules (rdkit.Chem.rdChem.Mol instances) and each must have conf_id property set. You can use ConformerGenerator to add them.
-Failed to calculate ElectroShapeFingerprint: Passed data must be molecules (rdkit.Chem.rdChem.Mol instances) and each must have conf_id property set. You can use ConformerGenerator to add them.
-Failed to calculate GETAWAYFingerprint: Passed data must be molecules (rdkit.Chem.rdChem.Mol instances) and each must have conf_id property set. You can use ConformerGenerator to add them.
-Failed to calculate MORSEFingerprint: Passed data must be molecules (rdkit.Chem.rdChem.Mol instances) and each must have conf_id property set. You can use ConformerGenerator to add them.
-Failed to calculate RDFFingerprint: Passed data must be molecules (rdkit.Chem.rdChem.Mol instances) and each must have conf_id property set. You can use ConformerGenerator to add them.
-Failed to calculate USRFingerprint: Passed data must be molecules (rdkit.Chem.rdChem.Mol instances) and each must have conf_id property set. You can use ConformerGenerator to add them.
-Failed to calculate USRCATFingerprint: Passed data must be molecules (rdkit.Chem.rdChem.Mol instances) and each must have conf_id property set. You can use ConformerGenerator to add them.
-Failed to calculate WHIMFingerprint: Passed data must be molecules (rdkit.Chem.rdChem.Mol instances) and each must have conf_id property set. You can use ConformerGenerator to add them.
