@@ -1,0 +1,46 @@
+from skfp.fingerprints import (
+    AtomPairFingerprint, AutocorrFingerprint, AvalonFingerprint, E3FPFingerprint,
+    ECFPFingerprint, ElectroShapeFingerprint, ERGFingerprint, EStateFingerprint,
+    GETAWAYFingerprint, GhoseCrippenFingerprint, KlekotaRothFingerprint, LaggnerFingerprint,
+    LayeredFingerprint, LingoFingerprint, MACCSFingerprint, MAPFingerprint, MHFPFingerprint,
+    MordredFingerprint, MORSEFingerprint, MQNsFingerprint, PatternFingerprint,
+    PharmacophoreFingerprint, PhysiochemicalPropertiesFingerprint, PubChemFingerprint,
+    RDFFingerprint, RDKitFingerprint, SECFPFingerprint, TopologicalTorsionFingerprint,
+    USRFingerprint, USRCATFingerprint, VSAFingerprint, WHIMFingerprint
+)
+
+# Dictionary of fingerprints
+fingerprint_dimensions = {
+    "AtomPairFingerprint": ("2D", AtomPairFingerprint),
+    "AutocorrFingerprint": ("2D", AutocorrFingerprint),
+    "AvalonFingerprint": ("2D", AvalonFingerprint),
+    "E3FPFingerprint": ("3D", E3FPFingerprint),
+    "ECFPFingerprint": ("2D", ECFPFingerprint),
+    "ElectroShapeFingerprint": ("3D", ElectroShapeFingerprint),
+    "ERGFingerprint": ("2D", ERGFingerprint),
+    "EStateFingerprint": ("2D", EStateFingerprint),
+    "GETAWAYFingerprint": ("3D", GETAWAYFingerprint),
+    "GhoseCrippenFingerprint": ("2D", GhoseCrippenFingerprint),
+    "KlekotaRothFingerprint": ("2D", KlekotaRothFingerprint),
+    "LaggnerFingerprint": ("2D", LaggnerFingerprint),
+    "LayeredFingerprint": ("2D", LayeredFingerprint),
+    "LingoFingerprint": ("2D", LingoFingerprint),
+    "MACCSFingerprint": ("2D", MACCSFingerprint),
+    "MAPFingerprint": ("2D", MAPFingerprint),
+    "MHFPFingerprint": ("2D", MHFPFingerprint),
+    "MordredFingerprint": ("2D", MordredFingerprint),
+    "MORSEFingerprint": ("3D", MORSEFingerprint),
+    "MQNsFingerprint": ("2D", MQNsFingerprint),
+    "PatternFingerprint": ("2D", PatternFingerprint),
+    "PharmacophoreFingerprint": ("3D", PharmacophoreFingerprint),
+    "PhysiochemicalPropertiesFingerprint": ("2D", PhysiochemicalPropertiesFingerprint),
+    "PubChemFingerprint": ("2D", PubChemFingerprint),
+    "RDFFingerprint": ("3D", RDFFingerprint),
+    "RDKitFingerprint": ("2D", RDKitFingerprint),
+    "SECFPFingerprint": ("2D", SECFPFingerprint),
+    "TopologicalTorsionFingerprint": ("2D", TopologicalTorsionFingerprint),
+    "USRFingerprint": ("3D", USRFingerprint),
+    "USRCATFingerprint": ("3D", USRCATFingerprint),
+    "VSAFingerprint": ("3D", VSAFingerprint),
+    "WHIMFingerprint": ("3D", WHIMFingerprint)
+}
