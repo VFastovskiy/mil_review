@@ -14,20 +14,23 @@ class MolecularFingerprints:
     def _load_molecules(self):
         """
         Load molecules from an SDF file using RDKit.
+        Ensure each molecule's conformer has a 'conf_id' property set to 0.
         """
         print("Loading molecules from SDF file...")
         supplier = Chem.SDMolSupplier(self.sdf_file)
-        return [mol for mol in supplier if mol is not None]
+        molecules = [mol for mol in supplier if mol is not None]
+
+        for mol in molecules:
+            mol.SetIntProp('conf_id', 0)
+
+        return molecules
 
     def _convert_to_smiles(self):
         """
         Convert 3D molecules to standardized SMILES using RDKit.
         """
         print("Converting molecules to SMILES...")
-        smiles = []
-        for mol in self.molecules:
-            if mol is not None:
-                smiles.append(Chem.MolToSmiles(mol))
+        smiles = [Chem.MolToSmiles(mol) for mol in self.molecules if mol is not None]
         print(f"Converted {len(smiles)} molecules to SMILES.")
         return smiles
 
@@ -39,9 +42,7 @@ class MolecularFingerprints:
         """
         print(f"Calculating {fingerprint_name} fingerprint...")
 
-        # retrieve fingerprint dimension and class
         fingerprint_data = fingerprint_dimensions.get(fingerprint_name)
-
         if fingerprint_data is None:
             raise ValueError(f"Fingerprint class '{fingerprint_name}' not found.")
 
@@ -49,7 +50,6 @@ class MolecularFingerprints:
 
         if dimension == "2D":
             print(f"Fingerprint {fingerprint_name} is 2D. Converting to SMILES...")
-            # for 2D fingerprints, mol converted into SMILES and standardized
             smiles = self._convert_to_smiles()
             pipeline = make_pipeline(MolFromSmilesTransformer(), MolStandardizer(), fingerprint_class(n_jobs=-1))
             fingerprints = pipeline.fit_transform(smiles)
@@ -57,23 +57,11 @@ class MolecularFingerprints:
             return fingerprints
 
         elif dimension == "3D":
-            for mol in self.molecules:
-                if mol is not None:
-                    full_id = mol.GetProp('full_id')
-                    try:
-                        conf_id = int(full_id.split('_')[-1])
-                        for conf in mol.GetConformers():
-                            conf.SetId(conf_id)
-                    except ValueError:
-                        print(f"Warning: Could not convert conf_id from full_id '{full_id}' for molecule.")
-            print(f"Fingerprint {fingerprint_name} is 3D. Using Mol objects directly...")
-            # For 3D fingerprints, directly use the Mol objects from SDF
+            print(f"Fingerprint {fingerprint_name} is 3D.")
+
             fingerprints = fingerprint_class(n_jobs=-1).fit_transform(self.molecules)
             print(f"Calculated {fingerprint_name} fingerprints for {len(self.molecules)} molecules.")
             return fingerprints
-
-        else:
-            raise ValueError(f"Fingerprint '{fingerprint_name}' has an unknown dimension.")
 
     def available_fingerprints(self):
         """
@@ -81,5 +69,3 @@ class MolecularFingerprints:
         """
         print("Returning available fingerprints...")
         return list(fingerprint_dimensions.keys())
-
-

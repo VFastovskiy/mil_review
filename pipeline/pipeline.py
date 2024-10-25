@@ -30,27 +30,22 @@ class FingerprintPipeline:
         """
         Calculate and save fingerprints for train and test datasets as CSV files.
         """
-        try:
-            print(f"Calculating {fingerprint_name} fingerprint for train dataset...")
-            X_train = self.train_molecules.calculate_fingerprint(fingerprint_name)
-            train_df = pd.DataFrame(X_train)
-            train_filename = os.path.join(self.output_dir, f"{fingerprint_name}_train.csv")
-            train_df.to_csv(train_filename, index=False)
-            print(f"Saved {fingerprint_name} fingerprint for train dataset to {train_filename}")
+        print(f"Calculating {fingerprint_name} fingerprint for train dataset...")
 
-            print(f"Calculating {fingerprint_name} fingerprint for test dataset...")
-            X_test = self.test_molecules.calculate_fingerprint(fingerprint_name)
-            test_df = pd.DataFrame(X_test)
-            test_filename = os.path.join(self.output_dir, f"{fingerprint_name}_test.csv")
-            test_df.to_csv(test_filename, index=False)
-            print(f"Saved {fingerprint_name} fingerprint for test dataset to {test_filename}")
+        fingerprint_calculator = self.train_molecules.calculate_fingerprint
+        X_train = fingerprint_calculator(fingerprint_name)
 
-        except Exception as e:
-            print(f"Error calculating fingerprint {fingerprint_name}: {e}")
-            # Log the error to log.txt
-            with open(self.log_file, 'a') as log:
-                log.write(f"Failed to calculate {fingerprint_name}: {str(e)}\n")
-            return False
+        train_df = pd.DataFrame(X_train)
+        train_filename = os.path.join(self.output_dir, f"{fingerprint_name}_train.csv")
+        train_df.to_csv(train_filename, index=False)
+        print(f"Saved {fingerprint_name} fingerprint for train dataset to {train_filename}")
+
+        print(f"Calculating {fingerprint_name} fingerprint for test dataset...")
+        X_test = self.test_molecules.calculate_fingerprint(fingerprint_name)
+        test_df = pd.DataFrame(X_test)
+        test_filename = os.path.join(self.output_dir, f"{fingerprint_name}_test.csv")
+        test_df.to_csv(test_filename, index=False)
+        print(f"Saved {fingerprint_name} fingerprint for test dataset to {test_filename}")
 
         return True
 
@@ -68,26 +63,23 @@ class FingerprintPipeline:
         print(f"Loaded {fingerprint_name} fingerprint data for train and test.")
         return X_train, X_test
 
-    def run_optimization(self, fingerprint_name):
+    def run_evaluation(self, fingerprint_name):
         """
-        Load saved fingerprints and run optimization for the selected fingerprint.
+        Load saved fingerprints and evaluate the model for the selected fingerprint.
         """
-        print(f"Running optimization for {fingerprint_name} fingerprint...")
+        print(f"Running evaluation for {fingerprint_name} fingerprint...")
 
         X_train, X_test = self.load_fingerprint_data(fingerprint_name)
-
-        # Train and test using XGBoost with CPU optimization (15 cores)
         model = QSARModel(X_train, self.train_labels, X_test, self.test_labels)
-        accuracy, best_params = model.run_xgboost_with_cpu_optimization()
+        accuracy = model.run_random_forest()
 
         print(f"Balanced Accuracy for {fingerprint_name}: {accuracy}")
-        print(f"Best Hyperparameters for {fingerprint_name}: {best_params}")
 
         return accuracy
 
     def calculate_all_fingerprints(self, fingerprints_to_run):
         """
-        Calculate and save all fingerprints provided in the list.
+        Calculate and save all fingerprints
         """
         print(f"Starting fingerprint calculation for {len(fingerprints_to_run)} fingerprints...")
         for fingerprint_name in fingerprints_to_run:
@@ -96,28 +88,27 @@ class FingerprintPipeline:
                 print(f"Skipping {fingerprint_name} due to error.")
         print("Fingerprint calculation complete.")
 
-    def run_all_optimizations(self, fingerprints_to_run):
+    def run_all_evaluations(self, fingerprints_to_run):
         """
-        Run model optimization for all fingerprints provided in the list.
-        Collect results in a CSV file with two columns: fingerprints and balanced accuracy.
+        Run model evaluations for all fingerprints provided in the fingerprints_to_run
+        Collect results in a CSV file with columns: fingerprints, type (2D/3D), and balanced accuracy.
         """
-        print(f"Starting model optimization for {len(fingerprints_to_run)} fingerprints...")
+        print(f"Starting model evaluation for {len(fingerprints_to_run)} fingerprints...")
         results = []
 
         for fingerprint_name in fingerprints_to_run:
             try:
-                print(f"\n--- Running optimization for {fingerprint_name} ---")
-                accuracy = self.run_optimization(fingerprint_name)
+                print(f"\n--- Running evaluation for {fingerprint_name} ---")
+                accuracy = self.run_evaluation(fingerprint_name)
                 results.append((fingerprint_name, accuracy))
             except Exception as e:
-                print(f"Error optimizing fingerprint {fingerprint_name}: {e}")
-                # Log the error to log.txt
+                print(f"Error evaluating fingerprint {fingerprint_name}: {e}")
                 with open(self.log_file, 'a') as log:
-                    log.write(f"Failed to optimize {fingerprint_name}: {str(e)}\n")
+                    log.write(f"Failed to evaluate {fingerprint_name}: {str(e)}\n")
 
         results_df = pd.DataFrame(results, columns=['fingerprint', 'balanced_accuracy'])
-        results_filename = os.path.join(self.output_dir, "optimization_results.csv")
+        results_filename = os.path.join(self.output_dir, "evaluation_results.csv")
         results_df.to_csv(results_filename, index=False)
-        print(f"Saved optimization results to {results_filename}")
+        print(f"Saved evaluation results to {results_filename}")
 
-        print("Model optimization complete.")
+        print("Model evaluation complete.")
