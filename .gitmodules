@@ -4,3 +4,6 @@
 [submodule "rdkit-scripts"]
 	path = rdkit-scripts
 	url = https://github.com/DrrDom/rdkit-scripts.git
+[submodule "pyzernike"]
+	path = pyzernike
+	url = https://github.com/maurerv/pyzernike.git

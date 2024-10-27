@@ -17,16 +17,6 @@ if __name__ == "__main__":
     # initialize and run the pipeline
     pipeline = FingerprintPipeline(train_sdf, test_sdf, train_labels, test_labels, output_dir="output_fingerprints", log_file="log.txt")
 
-    # fingerprints_to_run = [
-    #     "E3FPFingerprint",
-    #     "ElectroShapeFingerprint",
-    #     "GETAWAYFingerprint",
-    #     "MORSEFingerprint",
-    #     "RDFFingerprint",
-    #     "USRFingerprint",
-    #     "USRCATFingerprint",
-    #     "WHIMFingerprint"
-    # ]
     fingerprints_to_run = list(fingerprint_dimensions.keys())
-    # pipeline.calculate_all_fingerprints(fingerprints_to_run)
+    pipeline.calculate_all_fingerprints(fingerprints_to_run)
     pipeline.run_all_evaluations(fingerprints_to_run)
