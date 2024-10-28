@@ -5,7 +5,7 @@ from algorithms.qsar_ml import QSARModel
 
 
 class FingerprintPipeline:
-    def __init__(self, train_sdf, test_sdf, train_labels, test_labels, output_dir='output', log_file='log.txt'):
+    def __init__(self, train_sdf, test_sdf, train_labels, test_labels, output_dir='output', log_file='log_1.txt'):
         print("Initializing pipeline...")
         self.train_sdf = train_sdf
         self.test_sdf = test_sdf
@@ -48,6 +48,7 @@ class FingerprintPipeline:
         print(f"Saved {fingerprint_name} fingerprint for test dataset to {test_filename}")
 
         return True
+
 
     def load_fingerprint_data(self, fingerprint_name):
         """
@@ -107,7 +108,7 @@ class FingerprintPipeline:
                     log.write(f"Failed to evaluate {fingerprint_name}: {str(e)}\n")
 
         results_df = pd.DataFrame(results, columns=['fingerprint', 'balanced_accuracy'])
-        results_filename = os.path.join(self.output_dir, "evaluation_results_exp_2.csv")
+        results_filename = os.path.join(self.output_dir, "evaluation_results_exp_1_with_moe.csv")
         results_df.to_csv(results_filename, index=False)
         print(f"Saved evaluation results to {results_filename}")
 

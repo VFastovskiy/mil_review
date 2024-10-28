@@ -17,16 +17,18 @@ if __name__ == "__main__":
     # session = Session()
 
 
+    train_sdf = "data/dataset/3d_qsar_exp_1/train_set_598_points.sdf"
+    test_sdf = "data/dataset/3d_qsar_exp_1/test_set_200_points.sdf"
 
-    train_sdf = "data/dataset/3d_qsar_exp_2/train_set_594_points.sdf"
-    test_sdf = "data/dataset/3d_qsar_exp_2/test_set_199_points.sdf"
-
-    train_labels = pd.read_csv("data/dataset/3d_qsar_exp_2/train_set_594_points.csv")['label'].values
-    test_labels = pd.read_csv("data/dataset/3d_qsar_exp_2/test_set_199_points.csv")['label'].values
+    train_labels = pd.read_csv("data/dataset/3d_qsar_exp_1/train_set_598_points.csv")['label'].values
+    test_labels = pd.read_csv("data/dataset/3d_qsar_exp_1/test_set_200_points.csv")['label'].values
 
     # initialize and run the pipeline
-    pipeline = FingerprintPipeline(train_sdf, test_sdf, train_labels, test_labels, output_dir="fingerprints_exp_2", log_file="log_2.txt")
+    pipeline = FingerprintPipeline(train_sdf, test_sdf, train_labels, test_labels, output_dir="fingerprints_exp_1", log_file="log_1.txt")
 
     fingerprints_to_run = list(fingerprint_dimensions.keys())
-    pipeline.calculate_all_fingerprints(fingerprints_to_run)
+    # pipeline.calculate_all_fingerprints(fingerprints_to_run)
+
+    # add an external descriptors
+    fingerprints_to_run.append('MOE3D')
     pipeline.run_all_evaluations(fingerprints_to_run)
