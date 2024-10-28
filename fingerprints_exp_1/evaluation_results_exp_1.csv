@@ -1,4 +1,4 @@
-fingerprint,type,balanced_accuracy_test_1
+fingerprint,type,ba_test_1
 AtomPairFingerprint,2D,0.7250000000000001
 AutocorrFingerprint,2D,0.69
 AvalonFingerprint,2D,0.6950000000000001
