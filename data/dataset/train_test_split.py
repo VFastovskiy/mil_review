@@ -58,7 +58,7 @@ def main():
     # Create full_id by combining Molecule and Conformer_Idx columns with '_'
     test_data['full_id'] = test_data['Molecule'] + '_' + test_data['Conformer_Idx'].astype(str)
     csv_test_ids = set(test_data['full_id'].unique())
-    combined_input_sdf = '3d_qsar_experiment/combined798_3d_qsar_experiment.sdf'
+    combined_input_sdf = '3d_qsar_exp_2/combined793_3d_qsar_experiment.sdf'
     combined_dict = parse_sdf(combined_input_sdf)
 
     # Filter only full_ids present in the combined dataset
@@ -67,13 +67,13 @@ def main():
 
     # Split into train and test sets
     train_dict, test_dict = split_train_test(combined_dict, test_ids)
-    train_output_sdf = '3d_qsar_experiment/train_set_598_points.sdf'
-    test_output_sdf = '3d_qsar_experiment/test_set_200_points.sdf'
+    train_output_sdf = '3d_qsar_exp_2/train_set_594_points.sdf'
+    test_output_sdf = '3d_qsar_exp_2/test_set_199_points.sdf'
     write_sdf(train_dict, train_output_sdf)
     write_sdf(test_dict, test_output_sdf)
 
-    train_output_csv = '3d_qsar_experiment/train_set_598_points.csv'
-    test_output_csv = '3d_qsar_experiment/test_set_200_points.csv'
+    train_output_csv = '3d_qsar_exp_2/train_set_594_points.csv'
+    test_output_csv = '3d_qsar_exp_2/test_set_199_points.csv'
     create_csv(train_dict, train_output_csv)
     create_csv(test_dict, test_output_csv)
 

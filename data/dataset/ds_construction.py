@@ -15,7 +15,7 @@ def parse_sdf(file_path, active_only=True):
         act_conf = mol.GetProp('act_conf')  # Get act_conf (1 - active, 0 - inactive)
 
         # For actives, only consider active conformers (act_conf == 1)
-        if active_only and act_conf != '1':
+        if active_only and act_conf == '1':
             continue
 
         if mol_id not in mol_dict or energy < mol_dict[mol_id]['energy']:
@@ -34,9 +34,9 @@ def main():
     actives_input_sdf = 'actives399_all_confs.sdf'
     decoys_input_sdf = 'decoys399_all_confs.sdf'
 
-    actives_output_sdf = '3d_qsar_experiment/actives399_lowest_energy_3d_qsar_experiment.sdf'
-    decoys_output_sdf = '3d_qsar_experiment/decoys399_lowest_energy_3d_qsar_experiment.sdf'
-    combined_output_sdf = '3d_qsar_experiment/combined798_3d_qsar_experiment.sdf'
+    actives_output_sdf = '3d_qsar_exp_2/actives394_lowest_energy_inactives.sdf'
+    decoys_output_sdf = '3d_qsar_exp_2/decoys399_lowest_energy_inactives.sdf'
+    combined_output_sdf = '3d_qsar_exp_2/combined793_3d_qsar_experiment.sdf'
 
     actives = parse_sdf(actives_input_sdf, active_only=True)
     print(f"Number of unique actives: {len(actives)}")
