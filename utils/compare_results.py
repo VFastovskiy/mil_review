@@ -1,8 +1,8 @@
 import pandas as pd
 
 if __name__ == '__main__':
-    res_test_1 = pd.read_csv('../fingerprints_exp_1/evaluation_results_exp_1.csv')
-    res_test_2 = pd.read_csv('../fingerprints_exp_2/evaluation_results_exp_2.csv')
+    res_test_1 = pd.read_csv('fingerprints_exp_1/evaluation_results_exp_1.csv')
+    res_test_2 = pd.read_csv('fingerprints_exp_2/evaluation_results_exp_2.csv')
     merged_res = res_test_1.merge(res_test_2, how='outer', on='fingerprint')
     merged_res['diff%'] = ((merged_res['ba_test_2'] - merged_res['ba_test_1']) / merged_res['ba_test_1']) * 100
     merged_res['diff%'] = merged_res['diff%'].round(0)

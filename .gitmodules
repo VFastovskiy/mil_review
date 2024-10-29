@@ -7,3 +7,6 @@
 [submodule "pyzernike"]
 	path = pyzernike
 	url = https://github.com/maurerv/pyzernike.git
+[submodule "pmapper"]
+	path = pmapper
+	url = https://github.com/DrrDom/pmapper.git
