@@ -23,4 +23,5 @@ TestResults.xml
 #pycharm files
 *.xml
 *.iml
+#dataset dir
 data/
