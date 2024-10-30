@@ -14,6 +14,6 @@ def txt2csv(file_list, output_dir):
 
 
 if __name__ == '__main__':
-    output_dir = '../fingerprints_exp_1'
-    file_list = ['../fingerprints_exp_1/moe_3d_200p_test.txt', '../fingerprints_exp_1/moe_3d_598p_train.txt']
+    output_dir = '../fingerprints_exp_2'
+    file_list = ['../fingerprints_exp_2/moe_3d_199p_test.txt', '../fingerprints_exp_2/moe_3d_594p_train.txt']
     txt2csv(file_list, output_dir)

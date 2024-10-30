@@ -111,7 +111,7 @@ class FingerprintPipeline:
                     log.write(f"Failed to evaluate {fingerprint_name}: {str(e)}\n")
 
         results_df = pd.DataFrame(results, columns=['fingerprint', 'balanced_accuracy'])
-        results_filename = os.path.join(self.output_dir, "evaluation_results_exp_1_with_moe.csv")
+        results_filename = os.path.join(self.output_dir, "evaluation_results_exp_2_with_moe.csv")
         results_df.to_csv(results_filename, index=False)
         print(f"Saved evaluation results to {results_filename}")
 
