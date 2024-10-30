@@ -17,11 +17,11 @@ if __name__ == "__main__":
     # session = Session()
 
 
-    train_sdf = "data/dataset/3d_qsar_exp_1/train_set_598_points.sdf"
-    test_sdf = "data/dataset/3d_qsar_exp_1/test_set_200_points.sdf"
+    train_sdf = "data/dataset_base/3d_qsar_exp_1/train_set_598_points.sdf"
+    test_sdf = "data/dataset_base/3d_qsar_exp_1/test_set_200_points.sdf"
 
-    train_labels = pd.read_csv("data/dataset/3d_qsar_exp_1/train_set_598_points.csv")['label'].values
-    test_labels = pd.read_csv("data/dataset/3d_qsar_exp_1/test_set_200_points.csv")['label'].values
+    train_labels = pd.read_csv("data/dataset_base/3d_qsar_exp_1/train_set_598_points.csv", header=0)['label'].values
+    test_labels = pd.read_csv("data/dataset_base/3d_qsar_exp_1/test_set_200_points.csv", header=0)['label'].values
 
     # initialize and run the pipeline
     pipeline = FingerprintPipeline(train_sdf, test_sdf, train_labels, test_labels, output_dir="fingerprints_exp_1", log_file="log_1.txt")

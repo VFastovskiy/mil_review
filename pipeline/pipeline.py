@@ -57,12 +57,15 @@ class FingerprintPipeline:
         print(f"Loading {fingerprint_name} fingerprint data from CSV files...")
         train_filename = os.path.join(self.output_dir, f"{fingerprint_name}_train.csv")
         test_filename = os.path.join(self.output_dir, f"{fingerprint_name}_test.csv")
-
-        X_train = pd.read_csv(train_filename).values
-        X_test = pd.read_csv(test_filename).values
+        if fingerprint_name == '3DphFP':
+            x_train = pd.read_csv(train_filename).values
+            x_test = pd.read_csv(test_filename).values
+        else:
+            x_train = pd.read_csv(train_filename, header=0).values
+            x_test = pd.read_csv(test_filename, header=0).values
 
         print(f"Loaded {fingerprint_name} fingerprint data for train and test.")
-        return X_train, X_test
+        return x_train, x_test
 
     def run_evaluation(self, fingerprint_name):
         """
@@ -70,8 +73,8 @@ class FingerprintPipeline:
         """
         print(f"Running evaluation for {fingerprint_name} fingerprint...")
 
-        X_train, X_test = self.load_fingerprint_data(fingerprint_name)
-        model = QSARModel(X_train, self.train_labels, X_test, self.test_labels)
+        x_train, x_test = self.load_fingerprint_data(fingerprint_name)
+        model = QSARModel(x_train, self.train_labels, x_test, self.test_labels)
         accuracy = model.run_random_forest()
 
         print(f"Balanced Accuracy for {fingerprint_name}: {accuracy}")
