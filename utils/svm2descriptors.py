@@ -64,7 +64,18 @@ if __name__ == '__main__':
     label_dict = dict(zip(labeled_df['Molecule'], labeled_df['label']))
     descriptors['label'] = descriptors['Molecule'].map(label_dict)
 
-    # Save the updated DataFrame to CSV
+    # manual test/train split
+    test_molecules_df = pd.read_csv('../data/dataset_base/test_ids.csv')
+    test_molecules = set(test_molecules_df['Molecule'])
+
+    test_df = descriptors[descriptors['Molecule'].isin(test_molecules)]
+    test_df = test_df.drop(columns=['Molecule', 'label'])
+    test_df.to_csv(os.path.join(base_dir, '3DphFP_test.csv'), index=False)
+
+    train_df = descriptors[~descriptors['Molecule'].isin(test_molecules)]
+    train_df = train_df.drop(columns=['Molecule', 'label'])
+    train_df.to_csv(os.path.join(base_dir, '3DphFP_train.csv'), index=False)
+
     descriptors.to_csv(csv_fname_labeled, index=False)
     print(f"CSV saved to {csv_fname_labeled}")
 

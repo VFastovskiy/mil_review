@@ -33,16 +33,16 @@ class FingerprintPipeline:
         print(f"Calculating {fingerprint_name} fingerprint for train dataset...")
 
         fingerprint_calculator = self.train_molecules.calculate_fingerprint
-        X_train = fingerprint_calculator(fingerprint_name)
+        x_train = fingerprint_calculator(fingerprint_name)
 
-        train_df = pd.DataFrame(X_train)
+        train_df = pd.DataFrame(x_train)
         train_filename = os.path.join(self.output_dir, f"{fingerprint_name}_train.csv")
         train_df.to_csv(train_filename, index=False)
         print(f"Saved {fingerprint_name} fingerprint for train dataset to {train_filename}")
 
         print(f"Calculating {fingerprint_name} fingerprint for test dataset...")
-        X_test = self.test_molecules.calculate_fingerprint(fingerprint_name)
-        test_df = pd.DataFrame(X_test)
+        x_test = self.test_molecules.calculate_fingerprint(fingerprint_name)
+        test_df = pd.DataFrame(x_test)
         test_filename = os.path.join(self.output_dir, f"{fingerprint_name}_test.csv")
         test_df.to_csv(test_filename, index=False)
         print(f"Saved {fingerprint_name} fingerprint for test dataset to {test_filename}")
