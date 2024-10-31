@@ -1,5 +1,3 @@
-from xgboost import XGBClassifier
-from sklearn.model_selection import GridSearchCV
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import balanced_accuracy_score
 

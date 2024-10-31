@@ -57,12 +57,9 @@ class FingerprintPipeline:
         print(f"Loading {fingerprint_name} fingerprint data from CSV files...")
         train_filename = os.path.join(self.output_dir, f"{fingerprint_name}_train.csv")
         test_filename = os.path.join(self.output_dir, f"{fingerprint_name}_test.csv")
-        if fingerprint_name == '3DphFP':
-            x_train = pd.read_csv(train_filename).values
-            x_test = pd.read_csv(test_filename).values
-        else:
-            x_train = pd.read_csv(train_filename, header=0).values
-            x_test = pd.read_csv(test_filename, header=0).values
+
+        x_train = pd.read_csv(train_filename, header=0).values
+        x_test = pd.read_csv(test_filename, header=0).values
 
         print(f"Loaded {fingerprint_name} fingerprint data for train and test.")
         return x_train, x_test

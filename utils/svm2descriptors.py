@@ -69,10 +69,12 @@ if __name__ == '__main__':
     test_molecules = set(test_molecules_df['Molecule'])
 
     test_df = descriptors[descriptors['Molecule'].isin(test_molecules)]
+    test_df.to_csv(os.path.join(base_dir, '3DphFP_test_with_labels.csv'), index=False)
     test_df = test_df.drop(columns=['Molecule', 'label'])
     test_df.to_csv(os.path.join(base_dir, '3DphFP_test.csv'), index=False)
 
     train_df = descriptors[~descriptors['Molecule'].isin(test_molecules)]
+    train_df.to_csv(os.path.join(base_dir, '3DphFP_train_with_labels.csv'), index=False)
     train_df = train_df.drop(columns=['Molecule', 'label'])
     train_df.to_csv(os.path.join(base_dir, '3DphFP_train.csv'), index=False)
 
