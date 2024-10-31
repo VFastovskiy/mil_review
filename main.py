@@ -12,7 +12,7 @@ import os
 
 
 def calc_pmapper_descriptors():
-    basedir = '/home/vfastovskii/Desktop/mil_rev_last_november_2/data/dataset_base/3d_qsar_exp_1/exp1_last_try_rm_005'
+    basedir = '/home/vfastovskii/Desktop/mil_rev_last_november_2/data/dataset_base/3d_qsar_exp_2/exp2_last_try_rm_005'
 
     x_train = pd.read_csv(os.path.join(basedir, '3DphFP_train.csv'), header=0)
     y_train = pd.read_csv(os.path.join(basedir, '3DphFP_train_with_labels.csv'), usecols=["label"], header=0)['label'].values
@@ -21,6 +21,8 @@ def calc_pmapper_descriptors():
 
     qsar_model = QSARModel(x_train, y_train, x_test, y_test)
     balanced_accuracy = qsar_model.run_random_forest()
+    with open(os.path.join(basedir, 'exp2_pmapper_results.txt'), "w") as file:
+        file.write(f"Balanced Accuracy: {balanced_accuracy}\n")
 
 
 

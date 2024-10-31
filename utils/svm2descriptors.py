@@ -44,11 +44,11 @@ def load_svm_data(fname):
 
 
 if __name__ == '__main__':
-    base_dir = '../data/dataset_base/3d_qsar_exp_1/exp1_last_try_rm_005'
-    fname = 'exp_1_last_try_rm_005.txt'
-    labels_fname = '../data/dataset_base/3d_qsar_exp_1/combined798_3d_qsar_experiment.csv'
-    csv_fname_labeled = os.path.join(base_dir, 'exp_1_descriptors_with_labels.csv')
-    csv_fname = os.path.join(base_dir, 'exp_1_descriptors_without_labels.csv')
+    base_dir = '../data/dataset_base/3d_qsar_exp_2/exp2_last_try_rm_005'
+    fname = 'exp_2_last_try_rm_005.txt'
+    labels_fname = '../data/dataset_base/3d_qsar_exp_2/combined793_3d_qsar_experiment.csv'
+    csv_fname_labeled = os.path.join(base_dir, 'exp_2_descriptors_with_labels.csv')
+    csv_fname = os.path.join(base_dir, 'exp_2_descriptors_without_labels.csv')
 
     dsc_fname = os.path.join(base_dir, fname)
 
