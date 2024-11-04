@@ -11,7 +11,7 @@ import os
 
 
 
-def calc_pmapper_descriptors():
+def eval_pmapper():
     basedir = '/home/vfastovskii/Desktop/mil_rev_last_november_2/data/dataset_base/3d_qsar_exp_2/exp2_last_try_rm_005'
 
     x_train = pd.read_csv(os.path.join(basedir, '3DphFP_train.csv'), header=0)
@@ -55,4 +55,4 @@ if __name__ == "__main__":
     # fingerprints_to_run.append('MOE3D')
     # pipeline.run_all_evaluations(fingerprints_to_run)
 
-    calc_pmapper_descriptors()
+    eval_pmapper()

@@ -44,40 +44,48 @@ def load_svm_data(fname):
 
 
 if __name__ == '__main__':
-    base_dir = '../data/dataset_base/3d_qsar_exp_2/exp2_last_try_rm_005'
-    fname = 'exp_2_last_try_rm_005.txt'
-    labels_fname = '../data/dataset_base/3d_qsar_exp_2/combined793_3d_qsar_experiment.csv'
-    csv_fname_labeled = os.path.join(base_dir, 'exp_2_descriptors_with_labels.csv')
-    csv_fname = os.path.join(base_dir, 'exp_2_descriptors_without_labels.csv')
+    base_dir = '../data/dataset_base/all_confs_pmapper_ds'
+    fname = 'combined798_all_confs_pmapper_ds.txt'
+    labels_fname = '../data/dataset_base/combined798_all_confs_labels.csv'
+    csv_fname_labeled = os.path.join(base_dir, 'exp_3_descriptors_with_labels.csv')
+    csv_fname = os.path.join(base_dir, 'exp_3_descriptors_without_labels.csv')
 
     dsc_fname = os.path.join(base_dir, fname)
 
+    print("scv2df")
     bags, idx = load_svm_data(dsc_fname)
     print(f'There are {len(bags)} molecules encoded with {bags[0].shape[1]} descriptors')
 
-    descriptors = pd.DataFrame([bag[0] for bag in bags if bag.shape[0] > 0])
-    descriptors.to_csv(csv_fname, index=False)
-    descriptors['Molecule'] = idx
+    data = []
+
+    for molecule_id, bag in zip(idx, bags):
+        for instance_idx, instance in enumerate(bag):
+            row = {'Molecule': f"{molecule_id}_{instance_idx + 1}",
+                   **{f'd_{i}': val for i, val in enumerate(instance)}}
+            data.append(row)
+
+    descriptors_df = pd.DataFrame(data)
+    descriptors_df.to_csv(csv_fname, index=False)
 
     # mapping Molecule to a label
     labeled_df = pd.read_csv(labels_fname)
     label_dict = dict(zip(labeled_df['Molecule'], labeled_df['label']))
-    descriptors['label'] = descriptors['Molecule'].map(label_dict)
+    descriptors_df['label'] = descriptors_df['Molecule'].map(label_dict)
 
     # manual test/train split
     test_molecules_df = pd.read_csv('../data/dataset_base/test_ids.csv')
-    test_molecules = set(test_molecules_df['Molecule'])
+    test_molecules = test_molecules_df['Molecule'].tolist()
 
-    test_df = descriptors[descriptors['Molecule'].isin(test_molecules)]
+    test_df = descriptors_df[descriptors_df['Molecule'].str.split('_').str[0].isin(test_molecules)]
     test_df.to_csv(os.path.join(base_dir, '3DphFP_test_with_labels.csv'), index=False)
-    test_df = test_df.drop(columns=['Molecule', 'label'])
-    test_df.to_csv(os.path.join(base_dir, '3DphFP_test.csv'), index=False)
+    test_df_descriptors_only = test_df.drop(columns=['Molecule', 'label'])
+    test_df_descriptors_only.to_csv(os.path.join(base_dir, '3DphFP_test.csv'), index=False)
 
-    train_df = descriptors[~descriptors['Molecule'].isin(test_molecules)]
+    train_df = descriptors_df[~descriptors_df['Molecule'].str.split('_').str[0].isin(test_molecules)]
     train_df.to_csv(os.path.join(base_dir, '3DphFP_train_with_labels.csv'), index=False)
-    train_df = train_df.drop(columns=['Molecule', 'label'])
-    train_df.to_csv(os.path.join(base_dir, '3DphFP_train.csv'), index=False)
+    train_df_descriptors_only = train_df.drop(columns=['Molecule', 'label'])
+    train_df_descriptors_only.to_csv(os.path.join(base_dir, '3DphFP_train.csv'), index=False)
 
-    descriptors.to_csv(csv_fname_labeled, index=False)
+    descriptors_df.to_csv(csv_fname_labeled, index=False)
     print(f"CSV saved to {csv_fname_labeled}")
 
