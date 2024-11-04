@@ -25,7 +25,6 @@ def load_svm_data(fname):
     with open(fname.replace('txt', 'rownames')) as f:
         mol_names = [i.strip() for i in f.readlines()]
 
-    # labels_tmp = [float(i.split(':')[1]) for i in mol_names]
     idx_tmp = [i.split(':')[0] for i in mol_names]
     dsc_num = max([max([int(j.split(':')[0]) for j in i.strip().split(' ')]) for i in dsc_tmp])
 

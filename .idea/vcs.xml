@@ -3,5 +3,8 @@
   <component name="VcsDirectoryMappings">
     <mapping directory="" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/mi-qsar" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/pmapper" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/pyzernike" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/rdkit-scripts" vcs="Git" />
   </component>
 </project>
