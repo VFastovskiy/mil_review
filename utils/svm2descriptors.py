@@ -79,8 +79,7 @@ if __name__ == '__main__':
     print("First 5 entries in idx:", idx[:5])
     print("First 5 entries in bags:")
     for bag in bags[:5]:
-        for i in range(1, len(bag)):
-            print(bag[i])
+        print(sum(bag[0]))
 
     # data = []
     #
