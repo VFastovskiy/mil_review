@@ -37,8 +37,8 @@ if __name__ == "__main__":
     # Base.metadata.create_all(engine)  # Creates tables if they don't exist
     # Session = sessionmaker(bind=engine)
     # session = Session()
-
-
+    #
+    #
     # train_sdf = "data/dataset_base/3d_qsar_exp_2/train_set_594_points.sdf"
     # test_sdf = "data/dataset_base/3d_qsar_exp_2/test_set_199_points.sdf"
     #
@@ -50,9 +50,9 @@ if __name__ == "__main__":
     #
     # fingerprints_to_run = list(fingerprint_dimensions.keys())
     # pipeline.calculate_all_fingerprints(fingerprints_to_run)
-
-    # add an external descriptors
+    #
+    # # add an external descriptors
     # fingerprints_to_run.append('MOE3D')
     # pipeline.run_all_evaluations(fingerprints_to_run)
-
-    eval_pmapper()
+    #
+    # eval_pmapper()
