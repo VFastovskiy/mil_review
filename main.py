@@ -1,4 +1,5 @@
 import pandas as pd
+
 from pipeline.pipeline import FingerprintPipeline
 from utils.fingerprint_definitions import fingerprint_dimensions
 from rdkit.Chem import AllChem
@@ -37,18 +38,25 @@ if __name__ == "__main__":
     # Base.metadata.create_all(engine)  # Creates tables if they don't exist
     # Session = sessionmaker(bind=engine)
     # session = Session()
-    #
-    #
-    # train_sdf = "data/dataset_base/3d_qsar_exp_2/train_set_594_points.sdf"
-    # test_sdf = "data/dataset_base/3d_qsar_exp_2/test_set_199_points.sdf"
-    #
-    # train_labels = pd.read_csv("data/dataset_base/3d_qsar_exp_2/train_set_594_points.csv", header=0)['label'].values
-    # test_labels = pd.read_csv("data/dataset_base/3d_qsar_exp_2/test_set_199_points.csv", header=0)['label'].values
-    #
-    # # initialize and run the pipeline
-    # pipeline = FingerprintPipeline(train_sdf, test_sdf, train_labels, test_labels, output_dir="fingerprints_exp_2", log_file="log_2.txt")
-    #
+
+    basedir = 'data/dataset_base/3d_qsar_exp_sgtm'
+
+
+    train_sdf = os.path.join(basedir, 'train_set_all_confs.sdf')
+    test_sdf = os.path.join(basedir, 'test_set_all_confs.sdf')
+
+    train_labels = pd.read_csv(os.path.join(basedir, 'train_set_labels.csv'), header=0)['act_conf'].values
+    test_labels = pd.read_csv(os.path.join(basedir, 'test_set_labels.csv'), header=0)['act_conf'].values
+
+    # initialize and run the pipeline
+    pipeline = FingerprintPipeline(train_sdf, test_sdf, train_labels, test_labels, output_dir=basedir, log_file="log_sgtm.txt")
+    fingerprints_to_run = ['RDFFingerprint']
+    pipeline.calculate_all_fingerprints(fingerprints_to_run)
+
+
+
     # fingerprints_to_run = list(fingerprint_dimensions.keys())
+
     # pipeline.calculate_all_fingerprints(fingerprints_to_run)
     #
     # # add an external descriptors
