@@ -14,7 +14,7 @@ class QSARModel:
         """
         Train a RandomForestClassifier with 500 trees and default settings
         """
-        print("Setting up RandomForestClassifier with 500 trees...")
+        print("Setting up RandomForestClassifier with 1500 trees...")
         rf_model = RandomForestClassifier(n_estimators=1500, n_jobs=-1)
 
         print("Fitting the model to the training data...")
