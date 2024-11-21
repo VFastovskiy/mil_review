@@ -1,0 +1,21 @@
+BootStrap: docker
+From: continuumio/miniconda3
+
+%files
+    ./pmapper_env_py36.yml /opt/pmapper_env_py36.yml
+
+%post
+    . /opt/conda/etc/profile.d/conda.sh
+    conda env create -f /opt/pmapper_env_py36.yml
+    rm /opt/pmapper_env_py36.yml
+
+    cd /opt
+    git clone https://github.com/cimm-kzn/3D-MIL-QSAR.git
+
+%environment
+    source /opt/conda/etc/profile.d/conda.sh
+    export PATH="/opt/conda/bin:$PATH"
+    conda activate pmapper3d_env
+
+%runscript
+    exec "$@"
