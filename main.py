@@ -39,19 +39,21 @@ if __name__ == "__main__":
     # Session = sessionmaker(bind=engine)
     # session = Session()
 
-    basedir = 'data/dataset_base/3d_qsar_exp_sgtm'
+    basedir = 'data/dataset_base/3d_qsar_exp_3'
 
 
     train_sdf = os.path.join(basedir, 'train_set_all_confs.sdf')
     test_sdf = os.path.join(basedir, 'test_set_all_confs.sdf')
 
-    train_labels = pd.read_csv(os.path.join(basedir, 'train_set_labels.csv'), header=0)['act_conf'].values
-    test_labels = pd.read_csv(os.path.join(basedir, 'test_set_labels.csv'), header=0)['act_conf'].values
+    train_labels = pd.read_csv(os.path.join(basedir, 'train_set_labels.csv'), header=0)
+    test_labels = pd.read_csv(os.path.join(basedir, 'test_set_labels.csv'), header=0)
 
     # initialize and run the pipeline
-    pipeline = FingerprintPipeline(train_sdf, test_sdf, train_labels, test_labels, output_dir=basedir, log_file="log_sgtm.txt")
-    fingerprints_to_run = ['RDFFingerprint']
-    pipeline.calculate_all_fingerprints(fingerprints_to_run)
+    pipeline = FingerprintPipeline(train_sdf, test_sdf, train_labels, test_labels, output_dir=basedir, log_file="log_exp3.txt")
+    fingerprints_to_run = [ key for key, (dim, _) in fingerprint_dimensions.items() if dim == '3D']
+    # fingerprints_to_run = list(fingerprint_dimensions.keys())
+    # pipeline.calculate_all_fingerprints(fingerprints_to_run)
+    pipeline.run_all_evaluations(fingerprints_to_run)
 
 
 

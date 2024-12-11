@@ -1,5 +1,6 @@
 import pandas as pd
 import os
+
 from fingerprints.scikit_fingerprints import MolecularFingerprints
 from algorithms.qsar_ml import QSARModel
 
@@ -49,7 +50,6 @@ class FingerprintPipeline:
 
         return True
 
-
     def load_fingerprint_data(self, fingerprint_name):
         """
         Load fingerprints for train and test datasets from CSV files.
@@ -72,11 +72,12 @@ class FingerprintPipeline:
 
         x_train, x_test = self.load_fingerprint_data(fingerprint_name)
         model = QSARModel(x_train, self.train_labels, x_test, self.test_labels)
-        accuracy = model.run_random_forest()
+        # model.create_tsne_visualization(output_path=os.path.join(self.output_dir, f'{fingerprint_name}_tsne.png'))
+        results = model.run_models(use_test_set=False, fp_name=fingerprint_name, output_dir=self.output_dir)
 
-        print(f"Balanced Accuracy for {fingerprint_name}: {accuracy}")
-
-        return accuracy
+        # results = None
+        # print(f"Evaluation results for {fingerprint_name}: {results}")
+        return results
 
     def calculate_all_fingerprints(self, fingerprints_to_run):
         """
@@ -91,8 +92,8 @@ class FingerprintPipeline:
 
     def run_all_evaluations(self, fingerprints_to_run):
         """
-        Run model evaluations for all fingerprints provided in the fingerprints_to_run
-        Collect results in a CSV file with columns: fingerprints, type (2D/3D), and balanced accuracy.
+        Run model evaluations for all fingerprints provided in the fingerprints_to_run.
+        Collect results in a CSV file with columns: fingerprint, metrics.
         """
         print(f"Starting model evaluation for {len(fingerprints_to_run)} fingerprints...")
         results = []
@@ -100,15 +101,25 @@ class FingerprintPipeline:
         for fingerprint_name in fingerprints_to_run:
             try:
                 print(f"\n--- Running evaluation for {fingerprint_name} ---")
-                accuracy = self.run_evaluation(fingerprint_name)
-                results.append((fingerprint_name, accuracy))
+                evaluation_results = self.run_evaluation(fingerprint_name)
+                if evaluation_results is None:
+                    continue
+
+                # Collect results in structured format
+                for model_name, metrics in evaluation_results.items():
+                    results.append({
+                        "Fingerprint": fingerprint_name,
+                        "Model": model_name,
+                        **metrics
+                    })
             except Exception as e:
                 print(f"Error evaluating fingerprint {fingerprint_name}: {e}")
                 with open(self.log_file, 'a') as log:
                     log.write(f"Failed to evaluate {fingerprint_name}: {str(e)}\n")
 
-        results_df = pd.DataFrame(results, columns=['fingerprint', 'balanced_accuracy'])
-        results_filename = os.path.join(self.output_dir, "evaluation_results_exp_2_with_moe.csv")
+        # Save results to a CSV file
+        results_df = pd.DataFrame(results)
+        results_filename = os.path.join(self.output_dir, "exp_3_cv.csv")
         results_df.to_csv(results_filename, index=False)
         print(f"Saved evaluation results to {results_filename}")
 

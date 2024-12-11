@@ -32,7 +32,7 @@ fingerprint_dimensions = {
     "MORSEFingerprint": ("3D", MORSEFingerprint),
     "MQNsFingerprint": ("2D", MQNsFingerprint),
     "PatternFingerprint": ("2D", PatternFingerprint),
-    "PharmacophoreFingerprint": ("3D", PharmacophoreFingerprint),
+    # "PharmacophoreFingerprint": ("3D", PharmacophoreFingerprint),
     "PhysiochemicalPropertiesFingerprint": ("2D", PhysiochemicalPropertiesFingerprint),
     "PubChemFingerprint": ("2D", PubChemFingerprint),
     "RDFFingerprint": ("3D", RDFFingerprint),

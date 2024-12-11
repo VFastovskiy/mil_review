@@ -25,3 +25,5 @@ TestResults.xml
 *.iml
 #dataset dir
 data/
+#docker img
+*.sif
