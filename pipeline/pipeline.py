@@ -119,7 +119,7 @@ class FingerprintPipeline:
 
         # Save results to a CSV file
         results_df = pd.DataFrame(results)
-        results_filename = os.path.join(self.output_dir, "exp_3_cv.csv")
+        results_filename = os.path.join(self.output_dir, "Report_exp_3_custom2.csv")
         results_df.to_csv(results_filename, index=False)
         print(f"Saved evaluation results to {results_filename}")
 

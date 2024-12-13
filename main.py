@@ -40,6 +40,7 @@ if __name__ == "__main__":
     # session = Session()
 
     basedir = 'data/dataset_base/3d_qsar_exp_3'
+    # output_dir = os.path.join(basedir, 'test1')
 
 
     train_sdf = os.path.join(basedir, 'train_set_all_confs.sdf')

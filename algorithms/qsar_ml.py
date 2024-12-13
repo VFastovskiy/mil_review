@@ -11,6 +11,7 @@ from sklearn.metrics import (
 from utils.createTSNE import create_tsne_plot
 import numpy as np
 import os
+import pandas as pd
 
 
 def extract_root_id(mol_id: str) -> str:
@@ -68,6 +69,86 @@ def compute_category_metrics(y_true, y_pred, y_proba, act_mol_values, act_conf_v
     return results
 
 
+def calculate_confusion_matrix(subset):
+    """
+    Calculate the confusion matrix for a given subset.
+    Args:
+        subset (pd.DataFrame): A subset of the dataset.
+
+    Returns:
+        dict: Confusion matrix values.
+    """
+    tp = ((subset['act_conf'] == 1) & (subset['prediction'] == 1)).sum()
+    fn = ((subset['act_conf'] == 1) & (subset['prediction'] == 0)).sum()
+    fp = ((subset['act_conf'] == 0) & (subset['prediction'] == 1)).sum()
+    tn = ((subset['act_conf'] == 0) & (subset['prediction'] == 0)).sum()
+
+    return {
+        'TP': tp,
+        'FN': fn,
+        'FP': fp,
+        'TN': tn
+    }
+
+
+def calculate_f1(cm):
+    """
+    Calculate F1 Score for positive instances.
+    Args:
+        cm (dict): Confusion matrix values.
+
+    Returns:
+        float: F1 Score.
+    """
+    precision = cm['TP'] / (cm['TP'] + cm['FP']) if (cm['TP'] + cm['FP']) > 0 else 0
+    recall = cm['TP'] / (cm['TP'] + cm['FN']) if (cm['TP'] + cm['FN']) > 0 else 0
+    return 2 * (precision * recall) / (precision + recall) if (precision + recall) > 0 else 0
+
+
+def calculate_balanced_accuracy(cm):
+    """
+    Calculate Balanced Accuracy for negative instances of positive bags.
+    Args:
+        cm (dict): Confusion matrix values.
+
+    Returns:
+        float: Balanced Accuracy.
+    """
+    specificity = cm['TN'] / (cm['TN'] + cm['FP']) if (cm['TN'] + cm['FP']) > 0 else 0
+    sensitivity = cm['TP'] / (cm['TP'] + cm['FN']) if (cm['TP'] + cm['FN']) > 0 else 0
+    return (specificity + sensitivity) / 2
+
+
+def calculate_weighted_nip_negative(cm):
+    """
+    Calculate Weighted Negative Instance Precision (Weighted NIP) for negative instances of negative bags.
+    Args:
+        cm (dict): Confusion matrix values.
+
+    Returns:
+        float: Weighted NIP value.
+    """
+    tn = cm['TN']
+    fp = cm['FP']
+    return tn / (tn + 2 * fp) if (tn + 2 * fp) > 0 else 0
+
+
+def calculate_composite_score(f1, balanced_acc, weighted_nip_negative):
+    """
+    Calculate a composite score combining the three metrics.
+    Args:
+        f1 (float): F1 score.
+        balanced_acc (float): Balanced accuracy.
+        weighted_nip_negative (float): Weighted NIP for negative instances of negative bags.
+
+    Returns:
+        float: Composite score.
+    """
+    # Adjusted weights to prioritize F1 Score more
+    # return 0.5 * balanced_acc + 0.3 * f1 + 0.2 * weighted_nip_negative
+    return balanced_acc + f1 + weighted_nip_negative
+
+
 class QSARModel:
     def __init__(self, X_train, y_train, X_test, y_test):
         print("Initializing QSARModel...")
@@ -81,7 +162,7 @@ class QSARModel:
 
         print("Initialization complete.")
 
-    def run_models(self, use_test_set=False, fp_name=None, output_dir=None):
+    def run_models(self, use_test_set=False, fp_name=None, output_dir=None, use_custom_scorer=True):
         print("Splitting data into train and validation sets...")
 
         # Ensure active/decoy pairs are in the same fold
@@ -111,7 +192,7 @@ class QSARModel:
 
         param_grids = {
             "Random Forest": {
-                "max_depth": [None, 10, 20, 30]
+                "max_depth": [10, 30, 50]
             }
         }
 
@@ -122,17 +203,40 @@ class QSARModel:
         for model_name, model in models.items():
             print(f"Running group-based cross-validation for {model_name}...")
 
+            scorer = self.custom_scorer if use_custom_scorer else 'balanced_accuracy'
+
             grid_search = GridSearchCV(
                 model,
                 param_grid=param_grids.get(model_name, {}),
                 cv=group_kfold.split(X_train, y_train, groups=train_mol_ids),
-                scoring="balanced_accuracy",
+                scoring=scorer,
                 n_jobs=-1
             )
             grid_search.fit(X_train, y_train)
 
             best_model = grid_search.best_estimator_
             print(f"Best Parameters for {model_name}: {grid_search.best_params_}")
+
+            # Fit metrics on training set
+            print(f"Calculating fit metrics for {model_name} on the training set...")
+            y_train_pred = best_model.predict(X_train)
+            y_train_proba = (best_model.predict_proba(X_train)[:, 1]
+                             if hasattr(best_model, "predict_proba") else None)
+
+            train_balanced_acc = balanced_accuracy_score(y_train, y_train_pred)
+            train_precision = precision_score(y_train, y_train_pred, zero_division=0)
+            train_recall = recall_score(y_train, y_train_pred, zero_division=0)
+            train_f1 = f1_score(y_train, y_train_pred, zero_division=0)
+            train_roc_auc = (roc_auc_score(y_train, y_train_proba)
+                              if y_train_proba is not None else "N/A")
+
+            print(f"Training Set Results for {model_name}:")
+            print(f"  Balanced Accuracy: {train_balanced_acc:.4f}")
+            print(f"  Precision: {train_precision:.4f}")
+            print(f"  Recall: {train_recall:.4f}")
+            print(f"  F1-Score: {train_f1:.4f}")
+            print(f"  ROC-AUC: {train_roc_auc:.4f}" if y_train_proba is not None else "  ROC-AUC: N/A")
+            print("-" * 40)
 
             # Evaluate on the validation set
             print(f"Evaluating {model_name} on the validation set...")
@@ -146,7 +250,7 @@ class QSARModel:
             val_results_df['prediction'] = y_val_pred
             val_results_df['probability'] = y_val_proba if y_val_proba is not None else None
             val_results_df[['mol_id', 'full_id', 'energy', 'act_mol', 'act_conf', 'prediction', 'probability']].to_csv(os.path.join(output_dir,
-                f"{fp_name}_validation_results_{model_name.replace(' ', '_').lower()}.csv"), index=False
+                f"Report_{fp_name}_custom2_validation_results_{model_name.replace(' ', '_').lower()}.csv"), index=False
             )
             print(f"Validation predictions saved to validation_results_{model_name.replace(' ', '_').lower()}.csv")
 
@@ -159,6 +263,11 @@ class QSARModel:
 
             results[model_name] = {
                 "Best Params": grid_search.best_params_,
+                "Train Balanced Accuracy": train_balanced_acc,
+                "Train Precision": train_precision,
+                "Train Recall": train_recall,
+                "Train F1-Score": train_f1,
+                "Train ROC-AUC": train_roc_auc,
                 "Validation Balanced Accuracy": val_balanced_acc,
                 "Validation Precision": val_precision,
                 "Validation Recall": val_recall,
@@ -204,3 +313,20 @@ class QSARModel:
                 print("-" * 40)
 
         return results
+
+    def custom_scorer(self, estimator, X, y):
+        predictions = estimator.predict(X)
+        probabilities = estimator.predict_proba(X)[:, 1] if hasattr(estimator, 'predict_proba') else None
+        df = pd.DataFrame({
+            'act_conf': y,
+            'prediction': predictions
+        })
+
+        cm = calculate_confusion_matrix(df)
+        f1 = calculate_f1(cm)
+        balanced_acc = calculate_balanced_accuracy(cm)
+        weighted_nip_negative = calculate_weighted_nip_negative(cm)
+
+        composite_score = calculate_composite_score(f1, balanced_acc, weighted_nip_negative)
+
+        return composite_score
